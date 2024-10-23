@@ -2,6 +2,8 @@
 
 An Expo module config plugin to check for the existence of installed apps on Android and iOS.
 
+> **Note:** This library supports Expo SDK 51 and above.
+
 ## API Documentation
 
 - [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/android-check-installed-apps.md)
@@ -39,14 +41,23 @@ This asynchronous function accepts an array of package names and URL schemes and
 
 ## iOS Configuration
 
-To check if an iOS app is installed, you need to add the app's url schema entries to your `Info.plist` file:
+To check if an iOS app is installed, you need to add the app's url schema entries to your `app.json` file:
 
 ```xml
-<key>LSApplicationQueriesSchemes</key>
-<array>
-    <string>fb</string>
-    <string>twitter</string>
-</array>
+{
+  "expo": {
+    // other configurations...
+    "ios": {
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "fb",
+          "twitter"
+        ]
+      }
+    }
+  }
+}
+
 ```
 
 #### Example Usage

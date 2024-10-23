@@ -13,7 +13,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.modules.checkinstalledapps.example"
+      "bundleIdentifier": "expo.modules.checkinstalledapps.example",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["fb", "twitter"]
+      }
     },
     "android": {
       "adaptiveIcon": {
