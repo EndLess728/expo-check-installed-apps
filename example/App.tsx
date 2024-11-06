@@ -5,7 +5,11 @@ import { useEffect } from "react";
 export default function App() {
   const packageNames: string[] =
     Platform.select({
-      android: ["com.google.android.apps.fitness", "com.android.chrome"],
+      android: [
+        "com.google.android.apps.fitness",
+        "com.android.chrome",
+        "com.expo.flash.qr",
+      ],
       ios: ["fb://", "twitter://"],
     }) || [];
 

@@ -2,8 +2,6 @@
 
 An Expo module config plugin to check for the existence of installed apps on Android and iOS.
 
-> **Note:** This library supports Expo SDK 51 and above.
-
 ## API Documentation
 
 - [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/android-check-installed-apps.md)
@@ -23,6 +21,57 @@ For bare React Native projects, ensure that you have [installed and configured t
 npm install expo-check-installed-apps
 ```
 
+## Setup
+
+Both iOS and Android (as of 13) require specifying what you'll check in advance.
+
+In your `app.json`/`app.config.js`, set up the plugin with all of the package names and URL schemes you will check, like so:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-check-installed-apps",
+        {
+          "android": [
+            "com.facebook.katana",
+            "com.twitter.android"
+          ],
+          "ios": [
+            "fb",
+            "twitter"
+          ]
+        }
+      ]
+    ]
+  }
+}
+```
+
+Alternatively, add them to your AndroidManifest.xml...
+
+```xml
+<manifest>
+    <queries>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.twitter.android"/>
+    </queries>
+
+    ...
+</manifest>
+```
+
+ and Info.plist...
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>fb</string>
+    <string>twitter</string>
+</array>
+```
+
 ## Methods
 
 ### `checkInstalledApps`
@@ -39,38 +88,23 @@ This asynchronous function accepts an array of package names and URL schemes and
   - `true`: The app with the specified package name or URL scheme is installed.
   - `false`: The app with the specified package name or URL scheme is not installed.
 
-## iOS Configuration
-
-To check if an iOS app is installed, you need to add the app's url schema entries to your `app.json` file:
-
-```xml
-{
-  "expo": {
-    // other configurations...
-    "ios": {
-      "infoPlist": {
-        "LSApplicationQueriesSchemes": [
-          "fb",
-          "twitter"
-        ]
-      }
-    }
-  }
-}
-
-```
-
 #### Example Usage
 
 ```typescript
-import { checkInstalledApps } from "expo-check-installed-apps";
-import { Platform } from "react-native";
+import { checkInstalledApps } from 'expo-check-installed-apps';
+import { Platform } from 'react-native';
 
-const packageNames: string[] =
-  Platform.select({
-    android: ["com.google.android.apps.fitness", "com.android.chrome"],
-    ios: ["fb://", "twitter://"],
-  }) || [];
+const packageNames = Platform.select({
+  android: [
+    'com.google.android.apps.fitness',
+    'com.focusbear',
+    'com.android.chrome',
+  ],
+  ios: [
+    'fb://',
+    'twitter://',
+  ],
+});
 
 checkInstalledApps(packageNames)
   .then((installedApps) => {
@@ -89,7 +123,7 @@ checkInstalledApps(packageNames)
   "com.google.android.apps.fitness": false,
   "com.android.chrome": true,
   "fb://": true,
-  "twitter://": false
+  "twitter://": false,
 }
 ```
 
