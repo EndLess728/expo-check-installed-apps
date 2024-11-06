@@ -21,6 +21,57 @@ For bare React Native projects, ensure that you have [installed and configured t
 npm install expo-check-installed-apps
 ```
 
+## Setup
+
+Both iOS and Android (as of 13) require specifying what you'll check in advance.
+
+In your `app.json`/`app.config.js`, set up the plugin with all of the package names and URL schemes you will check, like so:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-check-installed-apps",
+        {
+          "android": [
+            "com.facebook.katana",
+            "com.twitter.android"
+          ],
+          "ios": [
+            "fb",
+            "twitter"
+          ]
+        }
+      ]
+    ]
+  }
+}
+```
+
+Alternatively, add them to your AndroidManifest.xml...
+
+```xml
+<manifest>
+    <queries>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.twitter.android"/>
+    </queries>
+
+    ...
+</manifest>
+```
+
+ and Info.plist...
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>fb</string>
+    <string>twitter</string>
+</array>
+```
+
 ## Methods
 
 ### `checkInstalledApps`
@@ -36,18 +87,6 @@ This asynchronous function accepts an array of package names and URL schemes and
 - **`Promise<Record<string, boolean>>`**: A promise that resolves to an object where the keys are package names or URL schemes and the values are booleans:
   - `true`: The app with the specified package name or URL scheme is installed.
   - `false`: The app with the specified package name or URL scheme is not installed.
-
-## iOS Configuration
-
-To check if an iOS app is installed, you need to add the app's url schema entries to your `Info.plist` file:
-
-```xml
-<key>LSApplicationQueriesSchemes</key>
-<array>
-    <string>fb</string>
-    <string>twitter</string>
-</array>
-```
 
 #### Example Usage
 

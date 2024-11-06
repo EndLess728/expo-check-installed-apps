@@ -22,8 +22,17 @@
       },
       "package": "expo.modules.androidcheckinstalledapps.example"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "plugins": [
+      [
+        "expo-android-check-installed-apps",
+        {
+          "android": [
+            "com.google.android.apps.fitness",
+            "com.focusbear",
+            "com.android.chrome"
+          ]
+        }
+      ]
+    ]
   }
 }
