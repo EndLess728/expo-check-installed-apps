@@ -2908,10 +2908,10 @@ expo-asset@~10.0.10:
     invariant "^2.2.4"
     md5-file "^3.2.3"
 
-expo-check-installed-apps@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/expo-check-installed-apps/-/expo-check-installed-apps-0.2.3.tgz#7f6c2d81517175516cd6bb021ee7d6bc5a7d093e"
-  integrity sha512-T2s0S4UueBUtT75sX+MkkNfvqO3vSCUvaEnodNZHEwgq3VTh2FhIMDcNw5bBOTlA80gZxgFLyhUXRurV6EmPKg==
+expo-check-installed-apps@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/expo-check-installed-apps/-/expo-check-installed-apps-0.2.5.tgz#1882e41d532fc7aa28d0892006b68997bda7995f"
+  integrity sha512-2G4TJyiLQz4ct5HcaXtYFAanuT5VGSoftm7jT4FT8dD2FgyXwqoTyGY6G/YTRHwMkfcHBKSLNxWF1Ofx9dJkZA==
 
 expo-constants@~16.0.0:
   version "16.0.2"
