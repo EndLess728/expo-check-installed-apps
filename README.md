@@ -1,7 +1,3 @@
-Here’s an improved and polished version of the README documentation for clarity, readability, and professionalism:
-
----
-
 # Expo Check Installed Apps
 
 A **config plugin** for Expo to check for the existence of installed apps on Android and iOS.
