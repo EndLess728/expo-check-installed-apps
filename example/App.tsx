@@ -1,8 +1,9 @@
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { checkInstalledApps, hello } from "expo-check-installed-apps";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
+  const [result, setResult] = useState({});
   const packageNames: string[] =
     Platform.select({
       android: [
@@ -15,10 +16,11 @@ export default function App() {
 
   useEffect(() => {
     const checkInstalled = async () => {
-      const checkApp = await checkInstalledApps(packageNames);
+      const checkInstalledAppsResult = await checkInstalledApps(packageNames);
+      setResult(checkInstalledAppsResult);
       console.log(
         "🚀 ~ file: App.tsx:15 ~ checkInstalled ~ checkApp ===> ",
-        checkApp
+        checkInstalledAppsResult
       );
     };
     checkInstalled();
@@ -27,6 +29,9 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>{hello()}</Text>
+      <Text style={styles.resultText}>
+        {JSON.stringify(result, null, 2)} {/* Pretty print JSON */}
+      </Text>
     </View>
   );
 }
@@ -37,5 +42,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    padding: 40,
+  },
+  resultText: {
+    fontWeight: "bold",
+    fontSize: 15,
+    marginTop: 20,
   },
 });

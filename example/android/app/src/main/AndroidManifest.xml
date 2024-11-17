@@ -11,6 +11,15 @@
       <data android:scheme="https"/>
     </intent>
   </queries>
+  <queries>
+    <package android:name="com.google.android.apps.fitness"/>
+    <package android:name="com.android.chrome"/>
+  </queries>
+  <queries>
+    <package android:name="com.google.android.apps.fitness"/>
+    <package android:name="com.android.chrome"/>
+    <package android:name="com.expo.flash.qr"/>
+  </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>

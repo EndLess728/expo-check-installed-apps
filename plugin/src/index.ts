@@ -9,20 +9,35 @@ interface PluginOptions {
   ios?: string[];
 }
 
-const withAndroid: ConfigPlugin<PluginOptions> = (
-  config,
-  {
-    android
-  }
-) => {
-  if (!android) {
+const withAndroid: ConfigPlugin<PluginOptions> = (config, { android }) => {
+  if (!android || android.length === 0) {
     return config;
   }
 
   config = withAndroidManifest(config, (config) => {
-    config.modResults.manifest.queries = android.map(packageName => ({
-      package: [{ $: { 'android:name': packageName } }], 
+    const manifest = config.modResults.manifest;
+
+    // Ensure `manifest` exists and is valid
+    if (!manifest) {
+      throw new Error("AndroidManifest.xml is invalid or missing!");
+    }
+
+    // Ensure `queries` exists
+    if (!manifest.queries) {
+      manifest.queries = [];
+    }
+
+    // Create a single new <queries> block with all new packages
+    const newPackages = android.map((packageName) => ({
+      $: { "android:name": packageName },
     }));
+
+    const newQueriesBlock = {
+      package: newPackages,
+    };
+
+    // Append the new <queries> block while preserving existing blocks
+    manifest.queries.push(newQueriesBlock);
 
     return config;
   });
@@ -30,21 +45,26 @@ const withAndroid: ConfigPlugin<PluginOptions> = (
   return config;
 };
 
-const withIos: ConfigPlugin<PluginOptions> = (
-  config,
-  {
-    ios
-  }
-) => {
-  if (!ios) {
+const withIos: ConfigPlugin<PluginOptions> = (config, { ios }) => {
+  if (!ios || ios.length === 0) {
     return config;
   }
 
   config = withInfoPlist(config, (config) => {
-    config.modResults.LSApplicationQueriesSchemes?.push(...ios);
+    const plist = config.modResults;
+
+    // Ensure `LSApplicationQueriesSchemes` exists
+    if (!plist.LSApplicationQueriesSchemes) {
+      plist.LSApplicationQueriesSchemes = [];
+    }
+
+    // Avoid duplicates by adding only new schemes
+    plist.LSApplicationQueriesSchemes = Array.from(
+      new Set([...plist.LSApplicationQueriesSchemes, ...ios])
+    );
 
     return config;
-  })
+  });
 
   return config;
 };
@@ -52,11 +72,13 @@ const withIos: ConfigPlugin<PluginOptions> = (
 /**
  * Apply all above plugins
  */
-const withExpoCheckInstalledApps: ConfigPlugin<PluginOptions> = (config, opts) => {
+const withExpoCheckInstalledApps: ConfigPlugin<PluginOptions> = (
+  config,
+  opts
+) => {
   config = withAndroid(config, opts);
   config = withIos(config, opts);
   return config;
 };
 
 export default withExpoCheckInstalledApps;
-

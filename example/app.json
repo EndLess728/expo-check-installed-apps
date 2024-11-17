@@ -13,10 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.modules.checkinstalledapps.example",
-      "infoPlist": {
-        "LSApplicationQueriesSchemes": ["fb", "twitter"]
-      }
+      "bundleIdentifier": "expo.modules.checkinstalledapps.example"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +26,11 @@
       [
         "expo-check-installed-apps",
         {
-          "android": ["com.google.android.apps.fitness", "com.android.chrome"],
+          "android": [
+            "com.google.android.apps.fitness",
+            "com.android.chrome",
+            "com.expo.flash.qr"
+          ],
           "ios": ["fb", "twitter"]
         }
       ]
