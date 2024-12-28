@@ -18,6 +18,7 @@ A **config plugin** for Expo to check for the existence of installed apps on And
   - [`checkInstalledApps`](#checkinstalledapps)
 - [Example Usage](#example-usage)
 - [Contributing](#contributing)
+- [Support the Project](#support-the-project)
 
 ---
 
@@ -153,3 +154,12 @@ checkInstalledApps(packageNames)
 ## Contributing
 
 Contributions are welcome!
+
+---
+
+## Support the Project
+
+If you find this library helpful, consider supporting it:
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support%20Me-orange?logo=buymeacoffee)](https://www.buymeacoffee.com/mantu.728)  
+[![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://paypal.me/Monty728)
