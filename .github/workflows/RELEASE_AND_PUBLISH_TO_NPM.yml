@@ -60,5 +60,6 @@ jobs:
           body: |
             New release of **expo-check-installed-apps** is available.
             - Version: ${{ env.NEW_VERSION }}
+            - [Explore the new release on NPM](https://www.npmjs.com/package/expo-check-installed-apps)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
