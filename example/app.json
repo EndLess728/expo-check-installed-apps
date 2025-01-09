@@ -26,12 +26,7 @@
       [
         "../app.plugin.js",
         {
-          "android": [
-            "com.google.android.apps.fitness",
-            "com.android.chrome",
-            "com.expo.flash.qr",
-            "com.test.this"
-          ],
+          "android": ["com.android.chrome", "com.expo.flash.qr"],
           "ios": ["fb", "twitter"]
         }
       ]

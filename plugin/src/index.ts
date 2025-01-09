@@ -10,10 +10,6 @@ interface PluginOptions {
 }
 
 const withAndroid: ConfigPlugin<PluginOptions> = (config, { android }) => {
-  if (!android || android.length === 0) {
-    return config;
-  }
-
   config = withAndroidManifest(config, (config) => {
     const manifest = config.modResults.manifest;
 
@@ -27,40 +23,45 @@ const withAndroid: ConfigPlugin<PluginOptions> = (config, { android }) => {
       manifest.queries = [];
     }
 
-    // Use the first <queries> block in the manifest
-    const existingQueries = manifest.queries.find(
-      (query) => query.intent || query.package
+    // Get the first `<queries>` block or create one if none exists
+    let queriesBlock = manifest.queries.find((query) => query.package);
+
+    if (!queriesBlock) {
+      // If no `<queries>` block exists, create one
+      queriesBlock = { package: [] };
+      manifest.queries.push(queriesBlock);
+    }
+
+    // Ensure `queriesBlock.package` exists
+    if (!queriesBlock.package) {
+      queriesBlock.package = [];
+    }
+
+    // Extract current packages from the manifest
+    const currentPackages = new Set(
+      queriesBlock.package?.map((pkg: any) => pkg.$["android:name"]) || []
     );
 
-    if (existingQueries) {
-      // Add packages to the existing <queries> block
-      if (!existingQueries.package) {
-        existingQueries.package = [];
-      }
+    // Convert the `android` array from `app.json` into a Set for easy comparison
+    const desiredPackages = new Set(android || []);
 
-      const existingPackageNames = new Set(
-        existingQueries.package.map((pkg: any) => pkg.$["android:name"])
-      );
+    // Determine packages to add and remove
+    const packagesToAdd = Array.from(desiredPackages).filter(
+      (pkg) => !currentPackages.has(pkg)
+    );
+    const packagesToRemove = Array.from(currentPackages).filter(
+      (pkg) => !desiredPackages.has(pkg)
+    );
 
-      const newPackages = android
-        .filter((packageName) => !existingPackageNames.has(packageName))
-        .map((packageName) => ({
-          $: { "android:name": packageName },
-        }));
+    // Add new packages
+    packagesToAdd.forEach((pkg) => {
+      queriesBlock!.package!.push({ $: { "android:name": pkg } });
+    });
 
-      if (newPackages.length > 0) {
-        existingQueries.package.push(...newPackages);
-      }
-    } else {
-      // Create a new <queries> block if none exists
-      const newPackages = android.map((packageName) => ({
-        $: { "android:name": packageName },
-      }));
-
-      manifest.queries.push({
-        package: newPackages,
-      });
-    }
+    // Remove packages no longer in `app.json`
+    queriesBlock.package = queriesBlock.package!.filter(
+      (pkg: any) => !packagesToRemove.includes(pkg.$["android:name"])
+    );
 
     return config;
   });
