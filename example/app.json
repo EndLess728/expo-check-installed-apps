@@ -24,12 +24,13 @@
     },
     "plugins": [
       [
-        "expo-check-installed-apps",
+        "../app.plugin.js",
         {
           "android": [
             "com.google.android.apps.fitness",
             "com.android.chrome",
-            "com.expo.flash.qr"
+            "com.expo.flash.qr",
+            "com.test.this"
           ],
           "ios": ["fb", "twitter"]
         }

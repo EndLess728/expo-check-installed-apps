@@ -27,17 +27,40 @@ const withAndroid: ConfigPlugin<PluginOptions> = (config, { android }) => {
       manifest.queries = [];
     }
 
-    // Create a single new <queries> block with all new packages
-    const newPackages = android.map((packageName) => ({
-      $: { "android:name": packageName },
-    }));
+    // Use the first <queries> block in the manifest
+    const existingQueries = manifest.queries.find(
+      (query) => query.intent || query.package
+    );
 
-    const newQueriesBlock = {
-      package: newPackages,
-    };
+    if (existingQueries) {
+      // Add packages to the existing <queries> block
+      if (!existingQueries.package) {
+        existingQueries.package = [];
+      }
 
-    // Append the new <queries> block while preserving existing blocks
-    manifest.queries.push(newQueriesBlock);
+      const existingPackageNames = new Set(
+        existingQueries.package.map((pkg: any) => pkg.$["android:name"])
+      );
+
+      const newPackages = android
+        .filter((packageName) => !existingPackageNames.has(packageName))
+        .map((packageName) => ({
+          $: { "android:name": packageName },
+        }));
+
+      if (newPackages.length > 0) {
+        existingQueries.package.push(...newPackages);
+      }
+    } else {
+      // Create a new <queries> block if none exists
+      const newPackages = android.map((packageName) => ({
+        $: { "android:name": packageName },
+      }));
+
+      manifest.queries.push({
+        package: newPackages,
+      });
+    }
 
     return config;
   });
