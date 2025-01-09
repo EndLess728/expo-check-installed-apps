@@ -36,8 +36,15 @@ const withAndroid: ConfigPlugin<PluginOptions> = (config, { android }) => {
       package: newPackages,
     };
 
-    // Append the new <queries> block while preserving existing blocks
-    manifest.queries.push(newQueriesBlock);
+    // Check if the new query block already exists
+    const queryExists = manifest.queries.some(
+      (query) => JSON.stringify(query) === JSON.stringify(newQueriesBlock)
+    );
+
+    if (!queryExists) {
+      // Append the new <queries> block while preserving existing blocks
+      manifest.queries.push(newQueriesBlock);
+    }
 
     return config;
   });
