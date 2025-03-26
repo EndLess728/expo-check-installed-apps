@@ -5,7 +5,6 @@
   <img src="https://img.shields.io/npm/dt/expo-check-installed-apps?color=darkgreen&style=flat-square&logo=npm" alt="npm downloads"/>
 </div>
 
-
 A **config plugin** for Expo to check for the existence of installed apps on Android and iOS.
 
 > **Note:** This library supports **Expo SDK 51 and above**.
@@ -22,6 +21,7 @@ A **config plugin** for Expo to check for the existence of installed apps on And
   - [Manual Configuration](#manual-configuration)
 - [API Documentation](#api-documentation)
   - [`checkInstalledApps`](#checkinstalledapps)
+  - [`checkInstalledAppsSync`](#checkinstalledappssync)
 - [Example Usage](#example-usage)
 - [Contributing](#contributing)
 - [Support the Project](#support-the-project)
@@ -107,17 +107,33 @@ Add the URL schemes to your `Info.plist`:
 
 ### `checkInstalledApps`
 
-Checks whether specific apps are installed on the user's device.
+Checks asynchronously whether specific apps are installed on the user's device.
 
 #### Parameters
 
-- **`packageNames`** (`Array<string>`):  
+- **`packageNames`** (`Array<string>`):
   An array of package names (for Android) or URL schemes (for iOS) to check.
 
 #### Returns
 
-- **`Promise<Record<string, boolean>>`**:  
+- **`Promise<Record<string, boolean>>`**:
   Resolves to an object where keys are package names or URL schemes, and values are booleans:
+  - `true`: App is installed.
+  - `false`: App is not installed.
+
+### `checkInstalledAppsSync`
+
+Checks synchronously whether specific apps are installed on the user's device.
+
+#### Parameters
+
+- **`packageNames`** (`Array<string>`):
+  An array of package names (for Android) or URL schemes (for iOS) to check.
+
+#### Returns
+
+- **`Record<string, boolean>`**:
+  Returns an object where keys are package names or URL schemes, and values are booleans:
   - `true`: App is installed.
   - `false`: App is not installed.
 
@@ -167,5 +183,5 @@ Contributions are welcome!
 
 If you find this library helpful, consider supporting it:
 
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support%20Me-orange?logo=buymeacoffee)](https://www.buymeacoffee.com/mantu.728)  
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support%20Me-orange?logo=buymeacoffee)](https://www.buymeacoffee.com/mantu.728)
 [![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://paypal.me/Monty728)

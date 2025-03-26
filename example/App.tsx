@@ -1,9 +1,12 @@
 import { Platform, StyleSheet, Text, View } from "react-native";
-import { checkInstalledApps, hello } from "expo-check-installed-apps";
+import {
+  checkInstalledApps,
+  hello,
+  checkInstalledAppsSync,
+} from "expo-check-installed-apps";
 import { useEffect, useState } from "react";
 
 export default function App() {
-  const [result, setResult] = useState({});
   const packageNames: string[] =
     Platform.select({
       android: [
@@ -13,6 +16,8 @@ export default function App() {
       ],
       ios: ["fb://", "twitter://"],
     }) || [];
+
+  const [result, setResult] = useState(checkInstalledAppsSync(packageNames));
 
   useEffect(() => {
     const checkInstalled = async () => {

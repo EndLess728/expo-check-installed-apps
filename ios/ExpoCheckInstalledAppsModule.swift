@@ -33,17 +33,26 @@ public class ExpoCheckInstalledAppsModule: Module {
     }
 
     AsyncFunction("checkAppsInstalled") { (packageNames: [String], promise: Promise) in
-       var result: [String: Bool] = [:]
+      var result = checkAppsInstalled(packageNames: packageNames)
+      promise.resolve(result)
+    }
 
-       for packageName in packageNames {
-         if let url = URL(string: packageName), UIApplication.shared.canOpenURL(url) {
-           result[packageName] = true 
-         } else {
-           result[packageName] = false 
-         }
-       }
+    Function("checkAppsInstalledSync") { (packageNames: [String]) in
+      return checkAppsInstalled(packageNames: packageNames)
+    }
+  }
 
-       promise.resolve(result)
-     }
+  func checkAppsInstalled(packageNames: [String]) -> [String: Bool] {
+    var result: [String: Bool] = [:]
+
+    for packageName in packageNames {
+      if let url = URL(string: packageName), UIApplication.shared.canOpenURL(url) {
+        result[packageName] = true
+      } else {
+        result[packageName] = false
+      }
+    }
+
+    return result
   }
 }

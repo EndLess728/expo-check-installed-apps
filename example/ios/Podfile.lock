@@ -7,7 +7,7 @@ PODS:
     - ExpoModulesCore
   - ExpoAsset (10.0.10):
     - ExpoModulesCore
-  - ExpoCheckInstalledApps (0.2.1):
+  - ExpoCheckInstalledApps (0.2.9):
     - ExpoModulesCore
   - ExpoFileSystem (17.0.1):
     - ExpoModulesCore
@@ -1407,7 +1407,7 @@ SPEC CHECKSUMS:
   EXConstants: 409690fbfd5afea964e5e9d6c4eb2c2b59222c59
   Expo: 9b6666ef2fedcfc89c5b9be2aa1ce12b81f9e7f5
   ExpoAsset: 323700f291684f110fb55f0d4022a3362ea9f875
-  ExpoCheckInstalledApps: d1181123d716af565c50ce02e2633db3c91056f0
+  ExpoCheckInstalledApps: 870cfbbe26fc1fffd561b92686d352271ad50018
   ExpoFileSystem: 80bfe850b1f9922c16905822ecbf97acd711dc51
   ExpoFont: 00756e6c796d8f7ee8d211e29c8b619e75cbf238
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
@@ -1468,4 +1468,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b4fee261fb7f6e5b531dd61914c93496c7af3ed4
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.16.2

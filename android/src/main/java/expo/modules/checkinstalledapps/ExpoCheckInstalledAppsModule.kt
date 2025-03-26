@@ -32,24 +32,32 @@ class ExpoCheckInstalledAppsModule : Module() {
     // is by default dispatched on the different thread than the JavaScript runtime runs on.
     AsyncFunction("setValueAsync") { value: String ->
       // Send an event to JavaScript.
-      sendEvent("onChange", mapOf(
-        "value" to value
-      ))
+      sendEvent(
+        "onChange", mapOf(
+          "value" to value
+        )
+      )
     }
 
     // An asynchronous function that takes a list of package names and returns their installation status.
     AsyncFunction("checkAppsInstalled") { packageNames: Array<String>, promise: Promise ->
       // Call the function to check installed apps and return the result
-      checkAppsInstalled(packageNames, promise)
+      val result = checkAppsInstalled(packageNames)
+      promise.resolve(result)
     }
 
+    // A synchronous function that takes a list of package names and returns their installation status.
+    Function("checkAppsInstalledSync") { packageNames: Array<String> ->
+      // Call the function to check installed apps and return the result
+      checkAppsInstalled(packageNames)
+    }
   }
 
   private val context
     get() = requireNotNull(appContext.reactContext)
 
   // Function to check if multiple apps are installed and resolve the promise with the result
-  private fun checkAppsInstalled(packageNames: Array<String>, promise: Promise) {
+  private fun checkAppsInstalled(packageNames: Array<String>): MutableMap<String, Boolean> {
     val pm: PackageManager = context.packageManager
     val result = mutableMapOf<String, Boolean>()
 
@@ -63,7 +71,6 @@ class ExpoCheckInstalledAppsModule : Module() {
       }
     }
 
-    // Resolve the promise with the map of package names and installation statuses
-    promise.resolve(result)
+    return result;
   }
 }

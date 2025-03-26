@@ -13,6 +13,12 @@ export async function checkInstalledApps(
   return ExpoCheckInstalledAppsModule.checkAppsInstalled(packageNames);
 }
 
+export function checkInstalledAppsSync(
+  packageNames: Array<string>
+): Record<string, boolean> {
+  return ExpoCheckInstalledAppsModule.checkAppsInstalledSync(packageNames);
+}
+
 export async function setValueAsync(value: string) {
   return await ExpoCheckInstalledAppsModule.setValueAsync(value);
 }
