@@ -3,6 +3,7 @@
 <div style="display: flex; gap: 10px; align-items: center;">
   <img src="https://img.shields.io/npm/v/expo-check-installed-apps?color=orange&style=flat-square&logo=npm" alt="npm version"/>
   <img src="https://img.shields.io/npm/dt/expo-check-installed-apps?color=darkgreen&style=flat-square&logo=npm" alt="npm downloads"/>
+  <img src="https://img.shields.io/npm/dw/expo-check-installed-apps?color=darkgreen&style=flat-square&logo=npm" alt="npm downloads"/>
 </div>
 
 
