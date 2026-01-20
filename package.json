@@ -1,6 +1,6 @@
 {
   "name": "expo-check-installed-apps",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Expo Package to check the installed apps in android and ios",
   "main": "build/index.js",
   "types": "build/index.d.ts",
