@@ -31,6 +31,14 @@ jobs:
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
           echo "Updated version to ${NEW_VERSION}"
 
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
+
       - name: Commit and Push New Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,14 +48,6 @@ jobs:
           git add package.json package-lock.json
           git commit -m "chore: bump version to ${{ env.NEW_VERSION }}"
           git push origin main
-
-      - name: Build package
-        run: npm run build
-
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
