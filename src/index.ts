@@ -1,18 +1,14 @@
 import ExpoCheckInstalledAppsModule from "./ExpoCheckInstalledAppsModule";
-
-// Get the native constant value.
-export const PI = ExpoCheckInstalledAppsModule.PI;
-
-export function hello(): string {
-  return ExpoCheckInstalledAppsModule.hello();
-}
+import { normalizeTargets } from "./normalizeTargets";
 
 export async function checkInstalledApps(
-  packageNames: Array<string>
+  targets: string[],
 ): Promise<Record<string, boolean>> {
-  return ExpoCheckInstalledAppsModule.checkAppsInstalled(packageNames);
-}
+  const normalizedTargets = normalizeTargets(targets);
 
-export async function setValueAsync(value: string) {
-  return await ExpoCheckInstalledAppsModule.setValueAsync(value);
+  if (normalizedTargets.length === 0) {
+    return {};
+  }
+
+  return ExpoCheckInstalledAppsModule.checkInstalledApps(normalizedTargets);
 }

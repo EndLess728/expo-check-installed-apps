@@ -6,8 +6,7 @@
   <img src="https://img.shields.io/npm/dw/expo-check-installed-apps?color=darkgreen&style=flat-square&logo=npm" alt="npm downloads"/>
 </div>
 
-
-A **config plugin** for Expo to check for the existence of installed apps on Android and iOS.
+A config plugin and native module for checking whether apps are installed on Android and iOS.
 
 > **Note:** This library supports **Expo SDK 51 and above**.
 
@@ -35,9 +34,7 @@ You can find the package on npm: [expo-check-installed-apps](https://www.npmjs.c
 
 ### Installation in Managed Expo Projects
 
-For [managed Expo projects](https://docs.expo.dev/archive/managed-vs-bare/), follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/android-check-installed-apps/).
-
-> If documentation for managed projects is unavailable, this library may not yet be supported within managed workflows and is likely to be included in an upcoming Expo SDK release.
+Install the package and configure the plugin in your Expo app config before running `npx expo prebuild` or a native build.
 
 ### Installation in Bare React Native Projects
 
@@ -55,7 +52,10 @@ npm install expo-check-installed-apps
 
 ### Automatic Configuration
 
-If using Expo's **prebuild method**, you can configure the plugin automatically in your `app.json` or `app.config.js` file. Specify the package names and URL schemes for the apps you want to check:
+If using Expo's prebuild flow, configure the plugin in your `app.json` or `app.config.js` file.
+
+- `android`: Android package names such as `com.twitter.android`
+- `ios`: iOS URL schemes such as `twitter` or `fb`
 
 ```json
 {
@@ -112,8 +112,10 @@ Checks whether specific apps are installed on the user's device.
 
 #### Parameters
 
-- **`packageNames`** (`Array<string>`):  
-  An array of package names (for Android) or URL schemes (for iOS) to check.
+- **`targets`** (`Array<string>`):
+  An array of Android package names or iOS URL schemes.
+
+On iOS, pass raw schemes like `fb` or `twitter`. The library also accepts `fb://` style input and normalizes it.
 
 #### Returns
 
@@ -130,13 +132,19 @@ Checks whether specific apps are installed on the user's device.
 import { checkInstalledApps } from "expo-check-installed-apps";
 import { Platform } from "react-native";
 
-const packageNames: string[] =
-  Platform.select({
-    android: ["com.google.android.apps.fitness", "com.android.chrome"], // Use package name of android apps
-    ios: ["fb://", "twitter://"], // Use proper url scheme of ios apps
-  }) || [];
+const targetsByPlatform: { android: string[]; ios: string[] } = {
+  android: ["com.google.android.apps.fitness", "com.android.chrome"],
+  ios: ["fb", "twitter"],
+};
 
-checkInstalledApps(packageNames)
+const targets =
+  Platform.OS === "android"
+    ? targetsByPlatform.android
+    : Platform.OS === "ios"
+      ? targetsByPlatform.ios
+      : [];
+
+checkInstalledApps(targets)
   .then((installedApps) => {
     console.log(installedApps);
   })
@@ -151,8 +159,8 @@ checkInstalledApps(packageNames)
 {
   "com.google.android.apps.fitness": false,
   "com.android.chrome": true,
-  "fb://": true,
-  "twitter://": false
+  "fb": true,
+  "twitter": false
 }
 ```
 

@@ -1,37 +1,38 @@
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { checkInstalledApps, hello } from "expo-check-installed-apps";
+import { checkInstalledApps } from "expo-check-installed-apps";
 import { useEffect, useState } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
+
+const targetsByPlatform: { android: string[]; ios: string[] } = {
+  android: [
+    "com.google.android.apps.fitness",
+    "com.android.chrome",
+    "com.expo.flash.qr",
+  ],
+  ios: ["fb", "twitter"],
+};
 
 export default function App() {
-  const [result, setResult] = useState({});
-  const packageNames: string[] =
-    Platform.select({
-      android: [
-        "com.google.android.apps.fitness",
-        "com.android.chrome",
-        "com.expo.flash.qr",
-      ],
-      ios: ["fb://", "twitter://"],
-    }) || [];
+  const [result, setResult] = useState<Record<string, boolean>>({});
+  const targets =
+    Platform.OS === "android"
+      ? targetsByPlatform.android
+      : Platform.OS === "ios"
+        ? targetsByPlatform.ios
+        : [];
 
   useEffect(() => {
     const checkInstalled = async () => {
-      const checkInstalledAppsResult = await checkInstalledApps(packageNames);
+      const checkInstalledAppsResult = await checkInstalledApps(targets);
       setResult(checkInstalledAppsResult);
-      console.log(
-        "🚀 ~ file: App.tsx:15 ~ checkInstalled ~ checkApp ===> ",
-        checkInstalledAppsResult
-      );
     };
+
     checkInstalled();
-  }, []);
+  }, [targets]);
 
   return (
     <View style={styles.container}>
-      <Text>{hello()}</Text>
-      <Text style={styles.resultText}>
-        {JSON.stringify(result, null, 2)} {/* Pretty print JSON */}
-      </Text>
+      <Text style={styles.title}>Installed app check</Text>
+      <Text style={styles.resultText}>{JSON.stringify(result, null, 2)}</Text>
     </View>
   );
 }
@@ -44,8 +45,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 40,
   },
+  title: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
   resultText: {
-    fontWeight: "bold",
     fontSize: 15,
     marginTop: 20,
   },
