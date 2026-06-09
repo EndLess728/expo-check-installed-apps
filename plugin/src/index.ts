@@ -1,104 +1,128 @@
 import {
+  ConfigPlugin,
   withAndroidManifest,
   withInfoPlist,
-  ConfigPlugin,
 } from "@expo/config-plugins";
+
+const IOS_SCHEME_PATTERN = /^[A-Za-z][A-Za-z0-9+.-]*$/;
 
 interface PluginOptions {
   android?: string[];
   ios?: string[];
 }
 
-const withAndroid: ConfigPlugin<PluginOptions> = (config, { android }) => {
-  config = withAndroidManifest(config, (config) => {
+type AndroidQueriesBlock = {
+  package?: { $: { "android:name": string } }[];
+};
+
+export function normalizeAndroidPackageNames(
+  packageNames: string[] = [],
+): string[] {
+  return Array.from(
+    new Set(packageNames.map((value) => value.trim()).filter(Boolean)),
+  );
+}
+
+export function normalizeIosSchemes(schemes: string[] = []): string[] {
+  return Array.from(
+    new Set(
+      schemes.map((value) => {
+        const normalizedValue = value
+          .trim()
+          .replace(/:\/\/.*/, "")
+          .replace(/:$/, "");
+
+        if (!normalizedValue || !IOS_SCHEME_PATTERN.test(normalizedValue)) {
+          throw new Error(`Invalid iOS URL scheme: ${value}`);
+        }
+
+        return normalizedValue;
+      }),
+    ),
+  );
+}
+
+export function applyAndroidQueries(
+  manifest: { queries?: AndroidQueriesBlock[] },
+  packageNames: string[],
+) {
+  const normalizedPackageNames = normalizeAndroidPackageNames(packageNames);
+
+  if (normalizedPackageNames.length === 0) {
+    return manifest;
+  }
+
+  if (!manifest.queries) {
+    manifest.queries = [];
+  }
+
+  let queriesBlock = manifest.queries[0];
+
+  if (!queriesBlock) {
+    queriesBlock = { package: [] };
+    manifest.queries.push(queriesBlock);
+  }
+
+  if (!queriesBlock.package) {
+    queriesBlock.package = [];
+  }
+
+  const currentPackages = new Set(
+    queriesBlock.package.map((pkg) => pkg.$["android:name"]),
+  );
+
+  normalizedPackageNames.forEach((packageName) => {
+    if (!currentPackages.has(packageName)) {
+      queriesBlock!.package!.push({ $: { "android:name": packageName } });
+    }
+  });
+
+  return manifest;
+}
+
+export function applyIosSchemes(
+  plist: { LSApplicationQueriesSchemes?: string[] },
+  schemes: string[],
+) {
+  const normalizedSchemes = normalizeIosSchemes(schemes);
+
+  if (normalizedSchemes.length === 0) {
+    return plist;
+  }
+
+  plist.LSApplicationQueriesSchemes = Array.from(
+    new Set([
+      ...(plist.LSApplicationQueriesSchemes ?? []),
+      ...normalizedSchemes,
+    ]),
+  );
+
+  return plist;
+}
+
+const withAndroid: ConfigPlugin<PluginOptions> = (config, { android = [] }) => {
+  return withAndroidManifest(config, (config) => {
     const manifest = config.modResults.manifest;
 
-    // Ensure `manifest` exists and is valid
     if (!manifest) {
       throw new Error("AndroidManifest.xml is invalid or missing!");
     }
 
-    // Ensure `queries` exists
-    if (!manifest.queries) {
-      manifest.queries = [];
-    }
-
-    // Get the first `<queries>` block or create one if none exists
-    let queriesBlock = manifest.queries.find((query) => query.package);
-
-    if (!queriesBlock) {
-      // If no `<queries>` block exists, create one
-      queriesBlock = { package: [] };
-      manifest.queries.push(queriesBlock);
-    }
-
-    // Ensure `queriesBlock.package` exists
-    if (!queriesBlock.package) {
-      queriesBlock.package = [];
-    }
-
-    // Extract current packages from the manifest
-    const currentPackages = new Set(
-      queriesBlock.package?.map((pkg: any) => pkg.$["android:name"]) || []
-    );
-
-    // Convert the `android` array from `app.json` into a Set for easy comparison
-    const desiredPackages = new Set(android || []);
-
-    // Determine packages to add and remove
-    const packagesToAdd = Array.from(desiredPackages).filter(
-      (pkg) => !currentPackages.has(pkg)
-    );
-    const packagesToRemove = Array.from(currentPackages).filter(
-      (pkg) => !desiredPackages.has(pkg)
-    );
-
-    // Add new packages
-    packagesToAdd.forEach((pkg) => {
-      queriesBlock!.package!.push({ $: { "android:name": pkg } });
-    });
-
-    // Remove packages no longer in `app.json`
-    queriesBlock.package = queriesBlock.package!.filter(
-      (pkg: any) => !packagesToRemove.includes(pkg.$["android:name"])
-    );
-
+    applyAndroidQueries(manifest, android);
     return config;
   });
-
-  return config;
 };
 
-const withIos: ConfigPlugin<PluginOptions> = (config, { ios }) => {
-  if (!ios || ios.length === 0) {
-    return config;
-  }
-
-  config = withInfoPlist(config, (config) => {
-    const plist = config.modResults;
-
-    // Ensure `LSApplicationQueriesSchemes` exists
-    if (!plist.LSApplicationQueriesSchemes) {
-      plist.LSApplicationQueriesSchemes = [];
-    }
-
-    // Avoid duplicates by adding only new schemes
-    plist.LSApplicationQueriesSchemes = Array.from(
-      new Set([...plist.LSApplicationQueriesSchemes, ...ios])
-    );
-
+const withIos: ConfigPlugin<PluginOptions> = (config, { ios = [] }) => {
+  return withInfoPlist(config, (config) => {
+    applyIosSchemes(config.modResults, ios);
     return config;
   });
-
-  return config;
 };
 
-/**
- * Apply all above plugins
- */
 const withExpoCheckInstalledApps: ConfigPlugin<PluginOptions> = (
   config,
-  opts
+  opts = {},
 ) => {
   config = withAndroid(config, opts);
   config = withIos(config, opts);
