@@ -6,17 +6,24 @@
   <img src="https://img.shields.io/npm/dw/expo-check-installed-apps?color=darkgreen&style=flat-square&logo=npm" alt="npm downloads"/>
 </div>
 
+---
+
 A config plugin and native module for checking whether apps are installed on Android and iOS.
 
+Use it to check Android package names such as `com.android.chrome` and iOS URL schemes such as `twitter`.
+
 > **Note:** This library supports **Expo SDK 51 and above**.
+>
+> **Important:** This package requires native code, so it does not work inside Expo Go. Use a development build, prebuild, or your own native app build.
 
 ---
 
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [Installation](#installation)
-  - [For Managed Expo Projects](#installation-in-managed-expo-projects)
-  - [For Bare React Native Projects](#installation-in-bare-react-native-projects)
+  - [Managed Expo Projects](#installation-in-managed-expo-projects)
+  - [Bare React Native Projects](#installation-in-bare-react-native-projects)
 - [Setup](#setup)
   - [Automatic Configuration](#automatic-configuration)
   - [Manual Configuration](#manual-configuration)
@@ -28,23 +35,71 @@ A config plugin and native module for checking whether apps are installed on And
 
 ---
 
+## Quick Start
+
+For most Expo apps:
+
+1. Install the package:
+
+```bash
+npx expo install expo-check-installed-apps
+```
+
+2. Add the plugin to `app.json` or `app.config.js`:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-check-installed-apps",
+        {
+          "android": ["com.android.chrome"],
+          "ios": ["twitter"]
+        }
+      ]
+    ]
+  }
+}
+```
+
+3. Rebuild the app with `npx expo prebuild` or create a new development/native build.
+
+4. Call the API:
+
+```ts
+import { checkInstalledApps } from "expo-check-installed-apps";
+
+const result = await checkInstalledApps(["com.android.chrome"]);
+```
+
+---
+
 ## Installation
 
 You can find the package on npm: [expo-check-installed-apps](https://www.npmjs.com/package/expo-check-installed-apps).
 
 ### Installation in Managed Expo Projects
 
-Install the package and configure the plugin in your Expo app config before running `npx expo prebuild` or a native build.
+Install the package with Expo:
+
+```bash
+npx expo install expo-check-installed-apps
+```
+
+Then follow [Automatic Configuration](#automatic-configuration) and rebuild the app.
 
 ### Installation in Bare React Native Projects
 
 For bare React Native projects, ensure you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before proceeding.
 
-Install the package via npm:
+Install the package with npm:
 
 ```bash
 npm install expo-check-installed-apps
 ```
+
+If you are not using Expo config plugins, follow the manual native setup below.
 
 ---
 
@@ -52,10 +107,17 @@ npm install expo-check-installed-apps
 
 ### Automatic Configuration
 
-If using Expo's prebuild flow, configure the plugin in your `app.json` or `app.config.js` file.
+If you are using Expo's prebuild flow, configure the plugin in your `app.json` or `app.config.js` file.
 
 - `android`: Android package names such as `com.twitter.android`
 - `ios`: iOS URL schemes such as `twitter` or `fb`
+
+Plugin options:
+
+| Option    | Platform | Value                                                  | Example               |
+| --------- | -------- | ------------------------------------------------------ | --------------------- |
+| `android` | Android  | Package names to add under `<queries>`                 | `com.twitter.android` |
+| `ios`     | iOS      | URL schemes to add under `LSApplicationQueriesSchemes` | `twitter`, `fb`       |
 
 ```json
 {
@@ -73,9 +135,16 @@ If using Expo's prebuild flow, configure the plugin in your `app.json` or `app.c
 }
 ```
 
+The plugin adds:
+
+- Android package queries to `AndroidManifest.xml`
+- iOS URL schemes to `LSApplicationQueriesSchemes` in `Info.plist`
+
+Any time you change the plugin options, rebuild the native app so the changes are applied.
+
 ### Manual Configuration
 
-If you are not using `app.json` or `app.config.js`, you'll need to manually update your native project files.
+If you are not using Expo config plugins, manually update your native project files.
 
 #### Android
 
@@ -110,12 +179,26 @@ Add the URL schemes to your `Info.plist`:
 
 Checks whether specific apps are installed on the user's device.
 
+```ts
+function checkInstalledApps(
+  targets: string[],
+): Promise<Record<string, boolean>>;
+```
+
 #### Parameters
 
 - **`targets`** (`Array<string>`):
   An array of Android package names or iOS URL schemes.
 
 On iOS, pass raw schemes like `fb` or `twitter`. The library also accepts `fb://` style input and normalizes it.
+
+Targets are trimmed, normalized, and de-duplicated before the native check runs.
+
+Validation rules:
+
+- Android expects valid package names such as `com.android.chrome`
+- iOS expects valid URL schemes such as `twitter` or `fb://`
+- Empty strings are rejected
 
 #### Returns
 
@@ -152,6 +235,8 @@ checkInstalledApps(targets)
     console.error("Error checking installed apps:", error);
   });
 ```
+
+On Android, the result keys are package names. On iOS, the result keys are normalized schemes.
 
 ### Example Response
 
