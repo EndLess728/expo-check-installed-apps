@@ -15,9 +15,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 21
+          node-version: 20
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
 
@@ -33,6 +33,16 @@ jobs:
 
       - name: Build package
         run: npm run build
+
+      - name: Setup npm auth
+        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Check npm auth
+        run: npm whoami
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish to npm
         env:
