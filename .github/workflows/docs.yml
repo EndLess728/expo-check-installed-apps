@@ -32,6 +32,15 @@ jobs:
           cache: npm
           cache-dependency-path: docs/package-lock.json
 
+      # The package's root tsconfig.json extends expo-module-scripts/tsconfig.base.
+      # The docs build doesn't install the package's own dependencies, but Vite
+      # still reads that tsconfig, so give it an empty base to extend.
+      - name: Stub expo-module-scripts/tsconfig.base for the docs build
+        working-directory: .
+        run: |
+          mkdir -p node_modules/expo-module-scripts
+          echo '{"compilerOptions":{}}' > node_modules/expo-module-scripts/tsconfig.base.json
+
       - run: npm ci
       - run: npm run build
 
