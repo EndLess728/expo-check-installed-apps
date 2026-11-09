@@ -1,0 +1,86 @@
+---
+title: Installation
+description: Install expo-check-installed-apps in a managed Expo app or a bare React Native project.
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+<Tabs syncKey="project">
+<TabItem label="Expo">
+
+<Steps>
+
+1. **Install the package**
+
+   `expo install` picks a version that matches your SDK:
+
+   ```bash
+   npx expo install expo-check-installed-apps
+   ```
+
+2. **Add the config plugin** with the apps you want to check
+
+   ```json title="app.json"
+   {
+     "expo": {
+       "plugins": [
+         [
+           "expo-check-installed-apps",
+           {
+             "android": ["com.whatsapp", "com.android.chrome"],
+             "ios": ["whatsapp", "googlechrome"]
+           }
+         ]
+       ]
+     }
+   }
+   ```
+
+   More on this in [Configuration](../configuration/).
+
+3. **Rebuild the native app**
+
+   ```bash
+   npx expo prebuild --clean
+   npx expo run:android   # or: npx expo run:ios
+   ```
+
+   Or create a new development build with EAS: `eas build --profile development`.
+
+</Steps>
+
+</TabItem>
+<TabItem label="Bare React Native">
+
+<Steps>
+
+1. **Set up Expo modules**
+
+   If your project doesn't use Expo modules yet, follow [Installing Expo modules](https://docs.expo.dev/bare/installing-expo-modules/) first (`npx install-expo-modules@latest`).
+
+2. **Install the package**
+
+   ```bash
+   npm install expo-check-installed-apps
+   ```
+
+3. **Install pods**
+
+   ```bash
+   cd ios && pod install
+   ```
+
+4. **Declare the apps you'll check**
+
+   Without config plugins, edit `AndroidManifest.xml` and `Info.plist` by hand. See [Manual setup](../configuration/#manual-setup-without-the-plugin).
+
+5. **Rebuild** both apps.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+:::caution
+This module has native code, so it **will not work in Expo Go**. You'll get an error that the `ExpoCheckInstalledApps` native module can't be found.
+:::

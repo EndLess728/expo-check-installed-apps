@@ -5,6 +5,10 @@
 </p>
 
 <p align="center">
+  📖 <a href="https://endless728.github.io/expo-check-installed-apps/"><b>Read the full documentation →</b></a>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/expo-check-installed-apps">
     <img src="https://img.shields.io/npm/v/expo-check-installed-apps?style=flat-square&color=f97316&logo=npm&label=npm" alt="npm version" />
   </a>

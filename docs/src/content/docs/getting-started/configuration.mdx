@@ -1,0 +1,88 @@
+---
+title: Configuration
+description: Declare which apps your Expo app can query, with the config plugin or by editing AndroidManifest.xml queries and Info.plist LSApplicationQueriesSchemes manually.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Android 11+ and iOS 9+ only let your app ask about apps you've declared ahead of time. This is an operating-system rule, not a limit of this library. List every app you plan to check.
+
+## With the config plugin (recommended)
+
+```json title="app.json"
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-check-installed-apps",
+        {
+          "android": ["com.facebook.katana", "com.twitter.android", "com.whatsapp"],
+          "ios": ["fb", "twitter", "whatsapp"]
+        }
+      ]
+    ]
+  }
+}
+```
+
+| Option | Type | What it does |
+| --- | --- | --- |
+| `android` | `string[]` | Adds a `<package android:name="…" />` entry inside `<queries>` in `AndroidManifest.xml` for each package name. |
+| `ios` | `string[]` | Adds each scheme to `LSApplicationQueriesSchemes` in `Info.plist`. `fb://` and `fb:` are trimmed to `fb`. |
+
+Entries are trimmed and de-duplicated, and existing entries in your manifest or plist are kept. See the [config plugin reference](../../api/config-plugin/) for details.
+
+:::note[Rebuild after every change]
+Config plugins run during prebuild. After changing the list, run `npx expo prebuild --clean` and rebuild, or start a new EAS build.
+:::
+
+Using `app.config.js`? Same shape:
+
+```js title="app.config.js"
+export default {
+  expo: {
+    plugins: [
+      [
+        'expo-check-installed-apps',
+        { android: ['com.whatsapp'], ios: ['whatsapp'] },
+      ],
+    ],
+  },
+};
+```
+
+## Manual setup (without the plugin)
+
+<Tabs syncKey="platform">
+<TabItem label="Android">
+
+Add a `<queries>` block directly inside `<manifest>`:
+
+```xml title="android/app/src/main/AndroidManifest.xml"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <queries>
+    <package android:name="com.facebook.katana" />
+    <package android:name="com.twitter.android" />
+    <package android:name="com.whatsapp" />
+  </queries>
+
+  <!-- rest of your manifest -->
+</manifest>
+```
+
+</TabItem>
+<TabItem label="iOS">
+
+```xml title="ios/YourApp/Info.plist"
+<key>LSApplicationQueriesSchemes</key>
+<array>
+  <string>fb</string>
+  <string>twitter</string>
+  <string>whatsapp</string>
+</array>
+```
+
+</TabItem>
+</Tabs>
+
+Not sure what to put in these lists? See [Finding package names & schemes](../../guides/finding-identifiers/).

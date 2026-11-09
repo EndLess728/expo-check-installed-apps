@@ -1,0 +1,46 @@
+---
+title: Check installed apps in Expo & React Native
+description: expo-check-installed-apps tells you whether other apps are installed on the device, by Android package name or iOS URL scheme, with a config plugin that sets up the required native declarations.
+template: splash
+hero:
+  title: expo-check-installed-apps
+  tagline: Find out which apps are installed on the user's device from Expo or React Native. Check by package name on Android and URL scheme on iOS, with one async call.
+  image:
+    file: ../../assets/logo.svg
+  actions:
+    - text: Get started
+      link: getting-started/introduction/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/EndLess728/expo-check-installed-apps
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+```ts
+import { checkInstalledApps } from 'expo-check-installed-apps';
+
+const result = await checkInstalledApps(['com.whatsapp']);
+// { "com.whatsapp": true }
+```
+
+<CardGrid stagger>
+  <Card title="One call, both platforms" icon="seti:react">
+    Pass an array of identifiers and get back an object mapping each one to `true` or `false`.
+  </Card>
+  <Card title="Config plugin included" icon="puzzle">
+    Adds Android `<queries>` entries and iOS `LSApplicationQueriesSchemes` for you during prebuild.
+  </Card>
+  <Card title="Forgiving input" icon="approve-check">
+    Trims, de-duplicates and accepts `twitter://` or `twitter:` as well as `twitter` on iOS.
+  </Card>
+  <Card title="Validated early" icon="warning">
+    Invalid package names or schemes throw a clear error before any native call is made.
+  </Card>
+</CardGrid>
+
+## Good for
+
+Showing "Share to WhatsApp" only when WhatsApp is installed, opening a partner app instead of its website, picking a navigation app (Google Maps, Waze), payment app hand-offs, and "Continue in app" prompts.

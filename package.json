@@ -27,7 +27,7 @@
   },
   "author": "Mantu <aryanmk.mk5@gmail.com> (https://github.com/EndLess728)",
   "license": "MIT",
-  "homepage": "https://github.com/EndLess728/expo-check-installed-apps#readme",
+  "homepage": "https://endless728.github.io/expo-check-installed-apps/",
   "dependencies": {},
   "devDependencies": {
     "@expo/config-plugins": "^8.0.11",

@@ -12,3 +12,6 @@ __tests__
 /android/src/test/
 /android/build/
 /example/
+
+# Docs site (deployed to GitHub Pages, not part of the npm package)
+/docs/
