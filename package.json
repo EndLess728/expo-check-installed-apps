@@ -1,7 +1,7 @@
 {
   "name": "expo-check-installed-apps",
   "version": "0.2.14",
-  "description": "Expo Package to check the installed apps in android and ios",
+  "description": "Check whether apps are installed on Android and iOS from Expo and React Native, by package name or URL scheme, with a config plugin for package visibility and LSApplicationQueriesSchemes.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -16,10 +16,21 @@
     "open:android": "open -a \"Android Studio\" example/android"
   },
   "keywords": [
-    "react-native",
     "expo",
-    "expo-check-installed-apps",
-    "ExpoCheckInstalledApps"
+    "react-native",
+    "expo-module",
+    "expo-config-plugin",
+    "installed-apps",
+    "check-installed-apps",
+    "is-app-installed",
+    "app-detection",
+    "package-visibility",
+    "canOpenURL",
+    "LSApplicationQueriesSchemes",
+    "url-scheme",
+    "deep-linking",
+    "ios",
+    "android"
   ],
   "repository": "https://github.com/EndLess728/expo-check-installed-apps",
   "bugs": {
